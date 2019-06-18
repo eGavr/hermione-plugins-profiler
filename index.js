@@ -7,27 +7,34 @@ module.exports = (hermione, opts) => {
         return;
     }
 
-    const baseOnFn = hermione.on.bind(hermione);
+    const redefine = (baseFn) => {
+        return function(event, cb) {
+            const pluginName = parsePluginName()
+            const fn = (...args) => {
+                log(pluginName, event)
 
-    hermione.on = function(event, cb) {
-        const pluginName = 'hermione-plguins-profiler:' + parsePluginName() + `:event:${event}`;
+                const res = cb(...args);
 
-        const fn = (...args) => {
-            console.time(pluginName);
-
-            const res = cb(...args);
-
-            if (isPromise(res)) {
-                return res.finally(() => console.timeEnd(pluginName))
-            } else {
-                console.timeEnd(pluginName);
+                if (isPromise(res)) {
+                    return res.finally(() => log(pluginName, event))
+                } else {
+                    log(pluginName, event);
+                }
             }
-        }
 
-        return baseOnFn(event, fn);
-    }.bind(hermione);
+            return baseFn(event, fn);
+        }.bind(hermione);
+    }
+
+
+    hermione.on = redefine(hermione.on.bind(hermione));
+    hermione.prependListener = redefine(hermione.prependListener.bind(hermione));
 };
 
 function parsePluginName() {
-    return (new Error).stack.split('\n')[3].match(/\/node_modules\/(.+)\//)[1];
+    return (new Error()).stack.split('\n')[3].match(/\/node_modules\/(.+)\)/)[1];
+}
+
+function log(pluginName, event) {
+    console.log(`hermione-plugins-profiler:${Date()}:${pluginName}:${event}`);
 }
