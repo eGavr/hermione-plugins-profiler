@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/eGavr/hermione-plugins-profiler#readme",
   "dependencies": {
+    "gemini-configparser": "^1.0.0",
+    "lodash": "^4.17.11",
     "p-is-promise": "^2.1.0"
   }
 }

@@ -1,14 +1,23 @@
 'use strict';
 
+const _ = require('lodash');
 const isPromise = require('p-is-promise');
 
+const parseConfig = require('./config');
+
 module.exports = (hermione, opts) => {
-    if (opts.enabled === false) {
+    const config = parseConfig(opts);
+
+    if (!config.enabled) {
         return;
     }
 
     const redefine = (baseFn) => {
         return function(event, cb) {
+            if (!_.isEmpty(config.events) && !_.includes(config.events, event)) {
+                return baseFn(event, cb);
+            }
+
             const pluginName = parsePluginName()
             const fn = (...args) => {
                 log(pluginName, event)
