@@ -1,9 +1,12 @@
 'use strict';
 
+const path = require('path');
 const _ = require('lodash');
 const isPromise = require('p-is-promise');
 
 const parseConfig = require('./config');
+
+const UNKNOWN_PLUGIN_NAME = 'unknown-plugin-name';
 
 module.exports = (hermione, opts) => {
     const config = parseConfig(opts);
@@ -41,9 +44,22 @@ module.exports = (hermione, opts) => {
 };
 
 function parsePluginName() {
-    return (new Error()).stack.split('\n')[3].match(/\/node_modules\/(.+)\)/)[1];
+    const stack = (new Error()).stack;
+    const parsed = stack.split('\n')[3] || '';
+    const projectName = path.basename(process.cwd());
+    const regs = [/\/node_modules\/(.+)\)/, new RegExp(`\\/(${projectName}\\/.+)\\)`)];
+
+    for (let i in regs) {
+        const match = parsed.match(regs[i]);
+        if (match) {
+            return match[1];
+        }
+    }
+
+    log('cannot parse plugin name from stack', `\n${stack}`);
+    return UNKNOWN_PLUGIN_NAME;
 }
 
-function log(pluginName, event) {
-    console.log(`hermione-plugins-profiler:${Date()}:${pluginName}:${event}`);
+function log(...args) {
+    console.log(`hermione-plugins-profiler:${Date()}:${args.join(':')}`);
 }
