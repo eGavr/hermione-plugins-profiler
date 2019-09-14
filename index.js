@@ -47,7 +47,7 @@ function parsePluginName() {
     const stack = (new Error()).stack;
     const parsed = stack.split('\n')[3] || '';
     const projectName = path.basename(process.cwd());
-    const regs = [/\/node_modules\/(.+)\)/, new RegExp(`\\/(${projectName}\\/.+)\\)`)];
+    const regs = [/\/node_modules\/(.+)\)/, new RegExp(`\\/(${projectName}\\/.+)\\)`), / \((.+)\)/];
 
     for (let i in regs) {
         const match = parsed.match(regs[i]);
