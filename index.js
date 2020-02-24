@@ -8,6 +8,8 @@ const parseConfig = require('./config');
 
 const UNKNOWN_PLUGIN_NAME = 'unknown-plugin-name';
 
+const DATA = {};
+
 module.exports = (hermione, opts) => {
     const config = parseConfig(opts);
 
@@ -25,12 +27,22 @@ module.exports = (hermione, opts) => {
             const fn = (...args) => {
                 log(pluginName, event)
 
+                const start = new Date().getTime();
                 const res = cb(...args);
+                const end = new Date().getTime();
 
                 if (isPromise(res)) {
                     return res.finally(() => log(pluginName, event))
                 } else {
                     log(pluginName, event);
+                    const id = `${process.pid}:${pluginName}:${event}`;
+
+                    if (!DATA[id]) {
+                        DATA[id] = 0;
+                    }
+
+                    DATA[id] += end - start;
+                    console.log(`${id}:${DATA[id]}`)
                 }
             }
 
