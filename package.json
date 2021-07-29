@@ -4,21 +4,35 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "version": "standard-version",
+    "commit": "cz",
+    "deps:plugin": "cd plugin && npm i --only=prod",
+    "build:plugin": "cd plugin && npm run build",
+    "deps": "run-s deps:*",
+    "build": "run-s build:*",
+    "postinstall": "run-s deps"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eGavr/hermione-plugins-profiler.git"
+    "url": "git+https://github.com/gemini-testing/hermione-plugins-profiler.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/eGavr/hermione-plugins-profiler/issues"
+    "url": "https://github.com/gemini-testing/hermione-plugins-profiler/issues"
   },
-  "homepage": "https://github.com/eGavr/hermione-plugins-profiler#readme",
+  "homepage": "https://github.com/gemini-testing/hermione-plugins-profiler#readme",
+  "devDependencies": {
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "standard-version": "^9.0.0"
+  },
   "dependencies": {
-    "gemini-configparser": "^1.0.0",
-    "lodash": "^4.17.11",
-    "p-is-promise": "^2.1.0"
+    "npm-run-all": "^4.1.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

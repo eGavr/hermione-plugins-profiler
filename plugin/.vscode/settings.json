@@ -1,0 +1,11 @@
+{
+  "cSpell.userWords": [],
+  "cSpell.enabled": true,
+  "editor.formatOnSave": true,
+  "prettier.singleQuote": false,
+  "prettier.tabWidth": 4,
+  "prettier.useTabs": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.quoteStyle": "double"
+}
