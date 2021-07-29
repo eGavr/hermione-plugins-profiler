@@ -1,0 +1,36 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "project": "./tsconfig.json" },
+  "env": { "es6": true, "jest": true },
+  "ignorePatterns": ["node_modules", "build", "build-tools"],
+  "plugins": ["import", "eslint-comments", "typescript", "prettier"],
+  "extends": [
+    "gemini-testing",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:import/typescript",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
+  "rules": {
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "import/order": [
+      "error",
+      { "newlines-between": "always", "alphabetize": { "order": "asc" } }
+    ],
+    "sort-imports": [
+      "error",
+      { "ignoreDeclarationSort": true, "ignoreCase": true }
+    ],
+    "quotes": ["error", "single", "avoid-escape"],
+    "prettier/prettier": ["error", {
+      "singleQuote": true,
+      "printWidth": 70,
+      "tabWidth": 4,
+      "useTabs": false
+    }]
+  }
+}

@@ -1,24 +1,75 @@
 {
   "name": "hermione-plugins-profiler",
   "version": "0.2.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A plugin to profile another plugins",
+  "main": "build/index.js",
+  "repository": "https://github.com/gemini-testing/hermione-plugins-profiler",
+  "license": "MIT",
+  "keywords": [
+    "hermione",
+    "hermione-plugins-profiler"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run clean && tsc",
+    "watch:build": "npm run build -- --watch",
+    "lint": "eslint --config .eslintrc.json src",
+    "fix": "npm run lint -- --fix",
+    "test": "run-s build test:unit",
+    "test:unit": "jest --runInBand=true --watchAll=false",
+    "release": "standard-version",
+    "clean": "rimraf build *.tsbuildinfo",
+    "commit": "cz",
+    "prepublish": "npm run lint && npm run test && npm run clean && npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/eGavr/hermione-plugins-profiler.git"
+  "engines": {
+    "node": ">=12"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/eGavr/hermione-plugins-profiler/issues"
-  },
-  "homepage": "https://github.com/eGavr/hermione-plugins-profiler#readme",
   "dependencies": {
-    "gemini-configparser": "^1.0.0",
-    "lodash": "^4.17.11",
-    "p-is-promise": "^2.1.0"
-  }
+    "bluebird": "^3.7.2",
+    "fs-extra": "^10.0.0",
+    "gemini-configparser": "^1.1.0",
+    "hermione-profiler-ui": "^0.0.4",
+    "is-promise": "^4.0.0",
+    "lodash": "^4.17.21",
+    "stack-trace": "0.0.9"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.36",
+    "@types/fs-extra": "^9.0.12",
+    "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.171",
+    "@types/node": "^12.12.70",
+    "@types/stack-trace": "0.0.29",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.8.0",
+    "eslint-config-gemini-testing": "^3.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "hermione": "^4.1.4",
+    "jest": "^27.0.6",
+    "jest-extended": "^0.11.5",
+    "npm-run-all": "^4.1.5",
+    "prettier": "2.3.2",
+    "rimraf": "^3.0.2",
+    "standard-version": "^9.0.0",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "files": [
+    "build",
+    "build/**/*.spec.js",
+    "build/**/*.spec.d.ts"
+  ]
 }
