@@ -30,7 +30,7 @@ describe("JsonWriterMaster", () => {
         "reporter_dir/plugins.json",
         { autoClose: true, flags: "a" }
       );
-      expect(writeStreamMock.write).toBeCalledWith("{\"root\":[");
+      expect(writeStreamMock.write).toBeCalledWith('{"root":[');
     });
   });
 
@@ -45,7 +45,7 @@ describe("JsonWriterMaster", () => {
 
       writer.write({ some: "data1" });
 
-      expect(writeStreamMock.write).toBeCalledWith("{\"some\":\"data\"},");
+      expect(writeStreamMock.write).toBeCalledWith('{"some":"data"},');
     });
   });
 
@@ -60,7 +60,7 @@ describe("JsonWriterMaster", () => {
 
       writer.end();
 
-      expect(writeStreamMock.write).toBeCalledWith("{\"some\":\"data\"}]}");
+      expect(writeStreamMock.write).toBeCalledWith('{"some":"data"}]}');
     });
 
     test("should write empty object if only worker writes data", async () => {

@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky install",
     "version": "standard-version",
     "commit": "cz",
     "deps:plugin": "cd plugin && npm i --only=prod",
     "build:plugin": "cd plugin && npm run build",
     "deps": "run-s deps:*",
     "build": "run-s build:*",
+    "test": "run-s test:*",
+    "test:plugin": "cd plugin && npm run test",
     "postinstall": "run-s deps"
   },
   "repository": {
@@ -25,6 +28,7 @@
   "devDependencies": {
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
+    "husky": "^7.0.1",
     "standard-version": "^9.0.0"
   },
   "dependencies": {

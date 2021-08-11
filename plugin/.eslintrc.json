@@ -4,7 +4,7 @@
   "parserOptions": { "project": "./tsconfig.json" },
   "env": { "es6": true },
   "ignorePatterns": ["node_modules", "build", "coverage"],
-  "plugins": ["import", "eslint-comments", "typescript"],
+  "plugins": ["import", "eslint-comments", "typescript", "prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:eslint-comments/recommended",
@@ -31,6 +31,7 @@
       "error",
       { "ignoreDeclarationSort": true, "ignoreCase": true }
     ],
-    "quotes": ["error", "double"]
+    "prettier/prettier": ["error", { "singleQuote": false }],
+    "quotes": ["error", "double", "avoid-escape"]
   }
 }

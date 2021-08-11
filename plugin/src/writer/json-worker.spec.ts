@@ -43,7 +43,7 @@ describe("JsonWriterWorker", () => {
 
       writer.write({ some: "data" });
 
-      expect(writeStreamMock.write).toBeCalledWith("{\"some\":\"data\"},");
+      expect(writeStreamMock.write).toBeCalledWith('{"some":"data"},');
     });
   });
 

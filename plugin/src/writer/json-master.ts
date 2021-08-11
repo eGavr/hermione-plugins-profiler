@@ -7,7 +7,7 @@ export class JsonWriterMaster extends BaseWriter {
 
   public async init() {
     await super.init();
-    this.stream.write("{\"root\":[");
+    this.stream.write('{"root":[');
   }
 
   public write(data: any) {
