@@ -16,7 +16,7 @@ export const routes = [
       {
         title: "Init stage of workers",
         path: "/plugins/overall/workers",
-        Component: Plugins.OverallWorker,
+        Component: Plugins.OverallWorkers,
       },
       {
         title: "Events",
