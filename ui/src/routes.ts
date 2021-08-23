@@ -9,16 +9,6 @@ export const routes = [
     Icon: ApiOutlined,
     subItems: [
       {
-        title: "Init stage of master",
-        path: "/plugins/overall/master",
-        Component: Plugins.OverallMaster,
-      },
-      {
-        title: "Init stage of workers",
-        path: "/plugins/overall/workers",
-        Component: Plugins.OverallWorkers,
-      },
-      {
         title: "Events",
         path: "/plugins/events",
         Component: Plugins.Events,

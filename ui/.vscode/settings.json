@@ -8,4 +8,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.quoteStyle": "double",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

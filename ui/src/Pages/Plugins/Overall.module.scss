@@ -53,3 +53,11 @@
 :global .ant-table.ant-table-small tfoot > tr > td {
   padding: 5px 15px;
 }
+
+:global .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: #1c90ff;
+}
+
+:global .ant-collapse > .ant-collapse-item {
+  border: 0;
+}
