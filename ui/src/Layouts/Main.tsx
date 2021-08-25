@@ -8,63 +8,105 @@ import {
 import { notification, Spin } from "antd";
 import { Button, Layout } from "antd";
 import P from "bluebird";
+import { uniq } from "lodash";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import { usePluginsState } from "../Pages/Plugins/State";
+import { loadFile } from "../Pages/Plugins/api";
+import { usePluginsState } from "../Store/Plugins";
 
 import styles from "./Main.module.scss";
 import SideMenu from "./SideMenu";
 
 const { Content, Footer, Sider } = Layout;
 
+const files = uniq([
+  "http://localhost:3000/data/plugins1.json",
+  "http://localhost:3000/data/plugins2.json",
+  "http://localhost:3000/data/plugins3.json",
+  "http://localhost:3000/data/plugins4.json",
+  "http://localhost:3000/data/plugins5.json",
+  "http://localhost:3000/data/plugins6.json",
+  "http://localhost:3000/data/plugins7.json",
+  "http://localhost:3000/data/plugins8.json",
+]);
+
 const MainLayout: React.FC = (props) => {
   const [collapsed, setCollapsed] = useState(false);
-
   const state = usePluginsState();
+  let animationChain = P.delay(1000);
+  const updateFileListComponent = () => {
+    const progressItems = state.getSources().map((source) => {
+      const Icon = {
+        loading: <LoadingOutlined twoToneColor="blue" />,
+        empty: <LoadingOutlined />,
+        loaded: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+        error: <CloseCircleOutlined twoToneColor="red" />,
+      }[source.loadState];
+
+      return (
+        <div key={source.filePath}>
+          <Spin indicator={Icon} />
+          &nbsp; Loading {path.basename(source.filePath)}&nbsp;/&nbsp;
+          {source.rowsCount} rows
+        </div>
+      );
+    });
+
+    animationChain = animationChain.delay(5).then(() => {
+      notification.open({
+        description: progressItems,
+        message: "Downloads:",
+        duration: 0,
+        closeIcon: <span />,
+        key: "file-loader",
+      });
+    });
+  };
+  const hideFileListComponent = () => {
+    notification.close("file-loader");
+  };
 
   useEffect(() => {
-    let animationChain = P.delay(1000);
-
-    state.onSourceUpdates((sources) => {
-      const progressItems = sources.map((source) => {
-        const Icon = {
-          loading: <LoadingOutlined twoToneColor="blue" />,
-          empty: <LoadingOutlined />,
-          loaded: <CheckCircleTwoTone twoToneColor="#52c41a" />,
-          error: <CloseCircleOutlined twoToneColor="red" />,
-        }[source.loadState];
-
-        return (
-          <div key={source.filePath}>
-            <Spin indicator={Icon} />
-            &nbsp; Loading {path.basename(source.filePath)}&nbsp;/&nbsp;
-            {source.items.length} rows
-          </div>
-        );
-      });
-
-      animationChain = animationChain.delay(5).then(() => {
-        notification.open({
-          description: progressItems,
-          message: "Downloads:",
-          duration: 0,
-          closeIcon: <span />,
-          key: "file-loader",
-        });
-      });
-    });
-
-    state.onAllLoaded(() => {
-      animationChain.then(() => {
-        notification.close("file-loader");
-        state.markAsLoaded();
-      });
-    });
-
-    if (state.shouldFetch()) {
-      state.fetch();
+    if (!state.shouldFetch()) {
+      return;
     }
+
+    state.setLoadingState();
+
+    files.forEach((filePath) => {
+      state.addUntrackedSource(filePath);
+
+      const loader = loadFile(filePath);
+
+      loader
+        .on("chunk", (receivedItems) => {
+          state.addUntrackedItems(filePath, receivedItems);
+
+          updateFileListComponent();
+        })
+        .on("start", () => {
+          state.setUntrackedLoadingSourceState(filePath);
+
+          updateFileListComponent();
+        })
+        .on("error", (msg: string) => {
+          state.setUntrackedErrorSourceState(filePath, msg);
+
+          updateFileListComponent();
+        })
+        .on("complete", () => {
+          state.setUntrackedCompleteSourceState(filePath);
+
+          if (state.isAllSourcesLoaded()) {
+            animationChain.then(() => {
+              hideFileListComponent();
+              state.buildMap();
+              state.setLoadedState();
+            });
+          }
+        });
+    });
   });
 
   return (
