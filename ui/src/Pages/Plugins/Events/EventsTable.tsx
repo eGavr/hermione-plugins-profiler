@@ -1,5 +1,5 @@
 import { Progress, Table, Tag } from "antd";
-import { map, maxBy, sortBy } from "lodash";
+import _ from "lodash";
 
 type TableRecord = {
   duration: number;
@@ -18,7 +18,10 @@ type Props = {
 };
 
 const EventsTable: React.FC<Props> = (props) => {
-  const maxDuration = maxBy(map(props.data, "duration")) || 0;
+  const maxDuration = _.chain(props.data)
+    .map("duration")
+    .max()
+    .value();
   const data = props.data.map((item) => ({
     ...item,
     key: item.event,
@@ -85,7 +88,10 @@ const EventsTable: React.FC<Props> = (props) => {
         pagination={false}
         size="small"
         columns={columns}
-        dataSource={sortBy(data, "duration").reverse()}
+        dataSource={_.chain(data)
+          .sortBy("duration")
+          .reverse()
+          .value()}
         expandable={{ expandedRowRender: props.drawNestedTable }}
       />
     </div>

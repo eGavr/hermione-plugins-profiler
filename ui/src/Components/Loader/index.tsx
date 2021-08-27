@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 
-import styles from "./Loader.module.scss";
+import styles from "./index.module.scss";
 
 const Loader: React.FC = () => (
   <div className={styles.loader}>

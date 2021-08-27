@@ -2,7 +2,12 @@ import { createState, useHookstate } from "@hookstate/core";
 import { Untracked } from "@hookstate/untracked";
 
 import createMap from "./createMap";
-import { LoadState, PluginStatsItem, ProfilerStatsItem, Source } from "./types";
+import {
+  LoadState,
+  PluginStatsItem,
+  ProfilerStatsItem,
+  Source,
+} from "./types";
 
 const pluginsState = createState({
   sources: [] as Source[],
@@ -17,7 +22,9 @@ export const usePluginsState = () => {
   state.attach(Untracked);
 
   const findSource = (filePath: string) => {
-    const src = state.sources.find((src) => src.filePath.get() === filePath);
+    const src = state.sources.find(
+      (src) => src.filePath.get() === filePath
+    );
 
     if (!src) {
       throw new Error(`Unable to fine source="${filePath}" in store`);
@@ -46,7 +53,9 @@ export const usePluginsState = () => {
     },
     isAllSourcesLoaded() {
       return state.sources.every((src) =>
-        [LoadState.error, LoadState.loaded].includes(src.loadState.get())
+        [LoadState.error, LoadState.loaded].includes(
+          src.loadState.get()
+        )
       );
     },
     addUntrackedSource(filePath: string) {
@@ -75,12 +84,17 @@ export const usePluginsState = () => {
 
       Untracked(source.loadState).set(LoadState.loaded);
     },
-    addUntrackedItems(filePath: string, items: Array<ProfilerStatsItem>) {
+    addUntrackedItems(
+      filePath: string,
+      items: Array<ProfilerStatsItem>
+    ) {
       const source = findSource(filePath);
       const data = items.map((item) => ({ ...item, filePath }));
 
       Untracked(state.items).merge(data);
-      Untracked(source.rowsCount).set((count) => count + items.length);
+      Untracked(source.rowsCount).set(
+        (count) => count + items.length
+      );
     },
     getSources() {
       return state.sources.get();
@@ -94,7 +108,9 @@ export const usePluginsState = () => {
       Untracked(state.map).set(map);
     },
     getMap() {
-      return Untracked(state.map).get() as ReturnType<typeof createMap>;
+      return Untracked(state.map).get() as ReturnType<
+        typeof createMap
+      >;
     },
   };
 };

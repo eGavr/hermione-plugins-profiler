@@ -12,11 +12,11 @@ import { uniq } from "lodash";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import { usePluginsState } from "../store/plugins";
-import { loadFile } from "../utils/loader";
+import { usePluginsState } from "../../store/plugins";
+import { loadFile } from "../../utils/loader";
+import SideMenu from "../SideMenu";
 
-import styles from "./Main.module.scss";
-import SideMenu from "./SideMenu";
+import styles from "./index.module.scss";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -123,7 +123,10 @@ const MainLayout: React.FC = (props) => {
           <div className={styles.content}>{props.children}</div>
         </Content>
         <Footer className={styles.footer}>
-          <Button type="link" href="https://github.com/gemini-testing/hermione">
+          <Button
+            type="link"
+            href="https://github.com/gemini-testing/hermione"
+          >
             Profiler for hermione
           </Button>
         </Footer>

@@ -28,8 +28,14 @@ type Props = {
 };
 
 const PluginsTable: React.FC<Props> = (props) => {
-  const maxDuration = _(props.data).map("duration").max() || 0;
-  const waitable = _(props.data).first()?.waitable;
+  const maxDuration = _.chain(props.data)
+    .map("duration")
+    .max()
+    .value();
+  const waitable = _.chain(props.data)
+    .first()
+    .get("waitable")
+    .value();
   const data = props.data.map((item) => ({
     ...item,
     key: item.pluginName,
@@ -37,7 +43,8 @@ const PluginsTable: React.FC<Props> = (props) => {
   const itemHeight = 30;
   const barItemsCount = _.values(props.map).length;
   const containerHeight = barItemsCount * itemHeight;
-  const shouldShowScroll = containerHeight > ALLOWED_DIAGRAM_CONTAINER_HEIGHT;
+  const shouldShowScroll =
+    containerHeight > ALLOWED_DIAGRAM_CONTAINER_HEIGHT;
   const diagramContainerHeight = shouldShowScroll
     ? ALLOWED_DIAGRAM_CONTAINER_HEIGHT
     : containerHeight;

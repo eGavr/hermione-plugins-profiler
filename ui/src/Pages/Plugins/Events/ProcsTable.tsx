@@ -1,6 +1,5 @@
 import { Progress, Table, Tag } from "antd";
 import _ from "lodash";
-import { map, maxBy, sortBy } from "lodash";
 
 type TableRecord = {
   duration: number;
@@ -19,8 +18,14 @@ type Props = {
 };
 
 const ProcsTable: React.FC<Props> = (props) => {
-  const maxDuration = maxBy(map(props.data, "duration")) || 0;
-  const waitable = _(props.data).first()?.waitable;
+  const maxDuration = _.chain(props.data)
+    .map("duration")
+    .max()
+    .value();
+  const waitable = _.chain(props.data)
+    .first()
+    .get("waitable")
+    .value();
   const data = props.data.map((item) => ({
     ...item,
     key: `${item.filePath}:${item.pid}`,
@@ -87,7 +92,10 @@ const ProcsTable: React.FC<Props> = (props) => {
         pagination={{ pageSize: 50 }}
         size="small"
         columns={columns}
-        dataSource={sortBy(data, "duration").reverse()}
+        dataSource={_.chain(data)
+          .sortBy("duration")
+          .reverse()
+          .value()}
         expandable={{ expandedRowRender: props.drawNestedTable }}
       />
     </div>

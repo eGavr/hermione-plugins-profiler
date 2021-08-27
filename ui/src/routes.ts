@@ -23,4 +23,7 @@ const [firstSubitem] = firstItem.subItems;
 export const defaultPath = firstSubitem.path;
 export const defaultOpenedMenu = [firstItem.title];
 export const defaultOpenedSubMenu = [defaultPath];
-export const allRoutes = _.chain(routes).map("subItems").flatten().value();
+export const allRoutes = _.chain(routes)
+  .map("subItems")
+  .flatten()
+  .value();

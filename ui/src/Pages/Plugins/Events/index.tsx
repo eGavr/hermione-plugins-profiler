@@ -3,10 +3,10 @@ import { PageHeader } from "antd";
 import Loader from "../../../components/Loader";
 import { usePluginsState } from "../../../store/plugins";
 
-import styles from "./Events.module.scss";
 import EventsTable from "./EventsTable";
 import PluginsTable from "./PluginsTable";
 import ProcsTable from "./ProcsTable";
+import styles from "./index.module.scss";
 
 const Events: React.FC = () => {
   const state = usePluginsState();
@@ -14,8 +14,6 @@ const Events: React.FC = () => {
   if (!state.isLoaded()) {
     return <Loader />;
   }
-
-  // TODO: or add lables for async methods
 
   const dataMap = state.getMap();
 
@@ -37,7 +35,9 @@ const Events: React.FC = () => {
                     data={eventsLevel.list}
                     drawNestedTable={(record) => {
                       const pluginsLevel =
-                        eventsLevel.map[`${record.filePath}:${record.pid}`];
+                        eventsLevel.map[
+                          `${record.filePath}:${record.pid}`
+                        ];
 
                       return (
                         <PluginsTable

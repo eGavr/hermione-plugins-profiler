@@ -12,7 +12,11 @@ const App = () => (
   <Router>
     <MainLayout>
       <Switch>
-        <Route exact path="/" render={() => <Redirect to={defaultPath} />} />
+        <Route
+          exact
+          path="/"
+          render={() => <Redirect to={defaultPath} />}
+        />
         {allRoutes.map(({ path, Component }) => (
           <Route key={path} path={path} component={Component} />
         ))}

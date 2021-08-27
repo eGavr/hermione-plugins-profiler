@@ -1,7 +1,11 @@
 import { Menu } from "antd";
 import { withRouter } from "react-router-dom";
 
-import { defaultOpenedMenu, defaultOpenedSubMenu, routes } from "../routes";
+import {
+  defaultOpenedMenu,
+  defaultOpenedSubMenu,
+  routes,
+} from "../routes";
 
 const { SubMenu } = Menu;
 

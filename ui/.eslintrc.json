@@ -33,7 +33,10 @@
       "error",
       { "ignoreDeclarationSort": true, "ignoreCase": true }
     ],
-    "prettier/prettier": ["error", { "singleQuote": false }],
+    "prettier/prettier": ["error", {
+      "singleQuote": false,
+      "printWidth": 70
+    }],
     "quotes": ["error", "double", "avoid-escape"]
   }
 }
