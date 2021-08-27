@@ -1,82 +1,143 @@
-import { groupBy, keys, map, mapValues, maxBy, sumBy } from "lodash";
+import {
+  flatten,
+  get,
+  groupBy,
+  keys,
+  mapValues,
+  maxBy,
+  minBy,
+  orderBy,
+  sumBy,
+  values,
+} from "lodash";
 
 import { PluginStatsItem } from "./types";
+import { calcDuration, isEventWaitable } from "./utils";
 
 export default function createMap(items: Array<PluginStatsItem>) {
   return buildListenerLevel(items);
 }
 
-const buildListenerLevel: any = (items: Array<PluginStatsItem>) => {
+const buildListenerLevel = (items: Array<PluginStatsItem>) => {
+  const listenersMap = buildListenersMap(items);
+  const list = keys(listenersMap);
+
+  return {
+    list,
+    map: listenersMap,
+  };
+};
+
+const buildListenersMap = (items: Array<PluginStatsItem>) => {
   const grouped = groupBy(items, "listenerName");
-  const eventLevels = mapValues(grouped, buildEventsLevel);
+
+  return mapValues(grouped, buildEventsLevel);
+};
+
+const buildEventsLevel = (items: Array<PluginStatsItem>) => {
+  const eventsMap = buildEventsMap(items);
+  const list = values(eventsMap).map(({ list }) => {
+    const [first] = list;
+    const max = maxBy(list, "duration");
+
+    return {
+      duration: max?.duration || 0,
+      numberOfProcesses: list.length,
+      event: first.event,
+      listenerName: first.listenerName,
+      pid: first.pid,
+      filePath: first.filePath,
+      calls: get(max, "calls", 0),
+      worker: first.worker,
+      waitable: first.waitable,
+    };
+  });
 
   return {
-    list: keys(grouped),
-    map: eventLevels,
+    list,
+    map: eventsMap,
   };
 };
 
-const buildEventsLevel: any = (items: Array<PluginStatsItem>) => {
+const buildEventsMap = (items: Array<PluginStatsItem>) => {
   const grouped = groupBy(items, "event");
-  const procLevel = mapValues(grouped, buildProcLevel);
-  const currentLevel = map(
-    procLevel,
-    (data: { list: [{ sum: number }] }, event) => ({
-      event,
-      max: maxBy(data.list, "sum")?.sum,
-      numberOfProcesses: data.list.length,
-    })
-  );
+
+  return mapValues(grouped, buildProcsLevel);
+};
+
+const buildProcsLevel = (items: Array<PluginStatsItem>) => {
+  const procMap = buildProcMap(items);
+  const list = values(procMap).map(({ list, map }) => {
+    const [first] = list;
+    const duration = first.waitable
+      ? calcDuration(first.waitable, values(map))
+      : sumBy(list, "duration");
+
+    return {
+      // duration: sumBy(list, "duration"),
+      duration,
+      pid: first.pid,
+      event: first.event,
+      filePath: first.filePath,
+      listenerName: first.listenerName,
+      worker: first.worker,
+      calls: sumBy(list, "calls"),
+      waitable: first.waitable,
+    };
+  });
 
   return {
-    list: currentLevel,
-    map: procLevel,
+    list,
+    map: procMap,
   };
 };
 
-const buildProcLevel: any = (items: Array<PluginStatsItem>) => {
-  const grouped = groupBy(items, ({ filePath, pid }) => `${filePath}:${pid}`);
-  const pluginLevels = mapValues(grouped, buildPluginLevel);
-  const currentLevel = map(
-    pluginLevels,
-    (data: { sum: number; pid: number; filePath: string }) => ({
-      sum: data.sum,
-      pid: data.pid,
-      filePath: data.filePath,
-    })
-  );
+const buildProcMap = (items: Array<PluginStatsItem>) => {
+  const group = groupBy(items, ({ filePath, pid }) => `${filePath}:${pid}`);
 
+  return mapValues(group, buildPluginsLevel);
+};
+
+const buildPluginsLevel = (items: Array<PluginStatsItem>) => {
   return {
-    list: currentLevel,
-    map: pluginLevels,
+    list: buildCallsList(items),
+    map: buildCallsMap(items),
   };
 };
 
-const buildPluginLevel = (items: Array<PluginStatsItem>) => {
-  const grouped = groupBy(items, "pluginName");
-  const itemsLevels = mapValues(grouped, buildItemsLevel);
-  const currentLevel = map(
-    itemsLevels,
-    (data: { sum: number; items: [] }, pluginName) => ({
-      pluginName,
-      sum: data.sum,
-      calls: data.items.length,
-    })
-  );
-  const [first] = items;
+const buildCallsList = (items: Array<PluginStatsItem>) => {
+  const group = groupBy(items, "pluginName");
+  const reduced = mapValues(group, (items) => {
+    const [first] = items;
+    const waitable = isEventWaitable(first.event);
 
-  return {
-    list: currentLevel,
-    map: itemsLevels,
-    sum: sumBy(items, "duration"),
-    pid: first.pid,
-    filePath: first.filePath,
-  };
+    return {
+      duration: calcDuration(waitable, items),
+      calls: items.length,
+      pluginName: first.pluginName,
+      pid: first.pid,
+      filePath: first.filePath,
+      listenerName: first.listenerName,
+      event: first.event,
+      worker: first.worker,
+      waitable,
+    };
+  });
+
+  return values(reduced);
 };
 
-const buildItemsLevel: any = (items: Array<PluginStatsItem>) => {
-  return {
-    items: items,
-    sum: sumBy(items, "duration"),
-  };
+const buildCallsMap = (items: Array<PluginStatsItem>) => {
+  const pluginsGroup = groupBy(items, "pluginName");
+  const min = minBy(items, "start")?.start || 0;
+  const pluginsGroupWithRanges = mapValues(pluginsGroup, (items) => {
+    return orderBy(items, "start").map((item, idx) => ({
+      ...item,
+      title: `${item.pluginName} (${idx + 1})`,
+      range: [item.start - min, item.end - min],
+    }));
+  });
+  const callsGroup = groupBy(flatten(values(pluginsGroupWithRanges)), "title");
+
+  return mapValues(callsGroup, ([item]) => item || {});
 };

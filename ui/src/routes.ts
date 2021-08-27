@@ -1,7 +1,7 @@
 import { ApiOutlined } from "@ant-design/icons";
 import _ from "lodash";
 
-import Plugins from "./Pages/Plugins";
+import Plugins from "./pages/plugins";
 
 export const routes = [
   {

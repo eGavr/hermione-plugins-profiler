@@ -1,14 +1,15 @@
 import { Progress, Table, Tag } from "antd";
+import _ from "lodash";
 import { map, maxBy, sortBy } from "lodash";
 
 type TableRecord = {
   duration: number;
-  numberOfProcesses: number;
   event: string;
   listenerName: string;
   pid: number;
   filePath: string;
   calls: number;
+  worker: boolean;
   waitable: boolean;
 };
 
@@ -17,24 +18,25 @@ type Props = {
   drawNestedTable: (record: TableRecord) => React.ReactNode;
 };
 
-const EventsTable: React.FC<Props> = (props) => {
+const ProcsTable: React.FC<Props> = (props) => {
   const maxDuration = maxBy(map(props.data, "duration")) || 0;
+  const waitable = _(props.data).first()?.waitable;
   const data = props.data.map((item) => ({
     ...item,
-    key: item.event,
-    processes: item.numberOfProcesses,
+    key: `${item.filePath}:${item.pid}`,
+    type: item.worker ? "worker" : "master",
   }));
 
   const columns = [
     {
-      title: "Event",
-      dataIndex: "event",
-      key: "event",
+      title: "File",
+      dataIndex: "filePath",
+      key: "filePath",
     },
     {
-      title: "Number of processes",
-      dataIndex: "numberOfProcesses",
-      key: "numberOfProcesses",
+      title: "PID",
+      dataIndex: "pid",
+      key: "pid",
     },
     {
       title: "Number of calls",
@@ -43,24 +45,24 @@ const EventsTable: React.FC<Props> = (props) => {
     },
     {
       title: "Type",
-      dataIndex: "waitable",
-      key: "waitable",
+      dataIndex: "type",
+      key: "type",
       align: "center" as any,
-      render: (waitable: string) => {
-        const [type, color] = waitable
-          ? ["WAITABLE", "green"]
-          : ["NON_WAITABLE", "geekblue"];
+      render: (tag: string) => {
+        const color = tag === "master" ? "green" : "geekblue";
 
         return (
-          <Tag color={color} key={type}>
-            {type.toUpperCase()}
+          <Tag color={color} key={tag}>
+            {tag.toUpperCase()}
           </Tag>
         );
       },
     },
     {
       width: "50%",
-      title: "Max by process duration",
+      title: waitable
+        ? "Range between start and end of all plugins"
+        : "Sum duration of plugins",
       dataIndex: "duration",
       key: "duration",
       render: (duration: number) => {
@@ -82,7 +84,7 @@ const EventsTable: React.FC<Props> = (props) => {
     <div>
       <Table
         bordered
-        pagination={false}
+        pagination={{ pageSize: 50 }}
         size="small"
         columns={columns}
         dataSource={sortBy(data, "duration").reverse()}
@@ -92,4 +94,4 @@ const EventsTable: React.FC<Props> = (props) => {
   );
 };
 
-export default EventsTable;
+export default ProcsTable;

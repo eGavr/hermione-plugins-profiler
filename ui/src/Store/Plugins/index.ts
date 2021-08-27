@@ -4,43 +4,6 @@ import { Untracked } from "@hookstate/untracked";
 import createMap from "./createMap";
 import { LoadState, PluginStatsItem, ProfilerStatsItem, Source } from "./types";
 
-type DataMap = {
-  [listenerName: string]: {
-    list: Array<{
-      eventName: string;
-      duration: number;
-      processesCount: number;
-      origin: PluginStatsItem;
-    }>;
-    map: {
-      [eventName: string]: {
-        list: Array<{
-          filePath: string;
-          pid: number;
-          type: "worker" | "master";
-          origin: PluginStatsItem;
-        }>;
-        map: {
-          [filePathAndPid: string]: {
-            map: {
-              list: Array<{
-                pluginName: string;
-                numberOfCalls: number;
-                min: number;
-                max: number;
-                sum: number;
-              }>;
-              map: {
-                [pluginName: string]: Array<PluginStatsItem>;
-              };
-            };
-          };
-        };
-      };
-    };
-  };
-};
-
 const pluginsState = createState({
   sources: [] as Source[],
   items: [] as PluginStatsItem[],
@@ -131,7 +94,7 @@ export const usePluginsState = () => {
       Untracked(state.map).set(map);
     },
     getMap() {
-      return Untracked(state.map).get();
+      return Untracked(state.map).get() as ReturnType<typeof createMap>;
     },
   };
 };

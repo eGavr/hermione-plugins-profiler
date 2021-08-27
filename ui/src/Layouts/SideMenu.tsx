@@ -1,6 +1,4 @@
 import { Menu } from "antd";
-import { useEffect } from "react";
-import { useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import { defaultOpenedMenu, defaultOpenedSubMenu, routes } from "../routes";
@@ -13,7 +11,6 @@ const SideMenu = withRouter(({ history }) => {
       theme="dark"
       defaultSelectedKeys={defaultOpenedSubMenu}
       selectedKeys={[history.location.pathname]}
-      // defaultSelectedKeys={defaultOpenedSubMenu}
       defaultOpenKeys={defaultOpenedMenu}
       mode="inline"
     >

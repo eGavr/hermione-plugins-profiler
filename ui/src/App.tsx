@@ -5,7 +5,7 @@ import {
   Switch,
 } from "react-router-dom";
 
-import MainLayout from "./Layouts/Main";
+import MainLayout from "./layouts/Main";
 import { allRoutes, defaultPath } from "./routes";
 
 const App = () => (

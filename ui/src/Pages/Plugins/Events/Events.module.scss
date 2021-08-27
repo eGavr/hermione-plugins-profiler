@@ -1,18 +1,7 @@
-// .spinContainer {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-
-//   height: 100%;
-// }
-
-// .tooltip {
-//   padding: 14px 0;
-// }
-
-// .tooltip :global .ant-table.ant-table-small .ant-table-tbody .ant-table-cell {
-//   padding: 3px;
-// }
+.pluginsDiagramContaner {
+  position: absolute;
+  width: 100%;
+}
 
 .events :global .ant-progress-inner {
   border-radius: 0;

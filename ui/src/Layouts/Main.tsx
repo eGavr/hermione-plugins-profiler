@@ -12,8 +12,8 @@ import { uniq } from "lodash";
 import { useEffect } from "react";
 import { useState } from "react";
 
-import { loadFile } from "../Pages/Plugins/api";
-import { usePluginsState } from "../Store/Plugins";
+import { usePluginsState } from "../store/plugins";
+import { loadFile } from "../utils/loader";
 
 import styles from "./Main.module.scss";
 import SideMenu from "./SideMenu";
