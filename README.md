@@ -1,1 +1,3 @@
-# hermione-plugins-profiler
+# plugin
+
+A plugin to profile another plugins

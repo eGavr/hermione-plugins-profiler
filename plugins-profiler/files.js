@@ -1,0 +1,1 @@
+window.HERMIONE_PROFILER_FILES_DECLARATION = {plugins: ["./plugins.json"]};
