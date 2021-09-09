@@ -14,6 +14,18 @@ npm i -S hermione-plugins-profiler
 
 ### Attach
 
+**.hermione.conf.js:**
+
+```js
+// ...
+plugins: {
+  "hermione-plugins-profiler": {
+    enabled: true,
+    reportPath: "path_to_report" // default - "./plugins-profiler"
+  }
+}
+```
+
 ## Development
 
 ### Tests
