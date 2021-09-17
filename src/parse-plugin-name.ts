@@ -4,7 +4,10 @@ import _ from 'lodash';
 import * as stackTrace from 'stack-trace';
 import { StackFrame } from 'stack-trace';
 
+import { createDebug } from './debug';
+
 const UNKNOWN_PLUGIN_NAME = 'UNKNOWN_PLUGIN';
+const debug = createDebug('parse-plugin-name');
 
 const findFrameWithPluginName = (
     frames: StackFrame[]
@@ -23,7 +26,7 @@ const findFrameWithPluginName = (
 
 export function parsePluginName(error: Error): string {
     const logWarn = () =>
-        console.warn(
+        debug(
             `Unable to parse plugin name from stack: ${error.stack}`
         );
     const traceFrames = stackTrace.parse(error);
