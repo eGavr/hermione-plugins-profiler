@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/gemini-testing/hermione-plugins-profiler/compare/v0.2.2...v0.2.3) (2021-09-17)
+
+
+### Bug Fixes
+
+* **doc:** add info about attaching to the config ([86721f5](https://github.com/gemini-testing/hermione-plugins-profiler/commit/86721f5828d9f34aa2d0b8b4a18f3399b07897f7))
+* **logging:** do not log errors by default ([3cc1346](https://github.com/gemini-testing/hermione-plugins-profiler/commit/3cc13467c0f454696186b8f8e9f5981abd769e25))
+
 ### [0.2.2](https://github.com/gemini-testing/hermione-plugins-profiler/compare/v0.2.1...v0.2.2) (2021-09-09)
 
 
