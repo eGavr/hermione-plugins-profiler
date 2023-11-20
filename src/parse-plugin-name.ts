@@ -46,7 +46,8 @@ export function parsePluginName(error: Error): string {
         return UNKNOWN_PLUGIN_NAME;
     }
 
-    const [, pluginRootPath] = pluginIndexPath.split('node_modules');
+    const pluginRootPaths =  pluginIndexPath.split('node_modules');
+    const pluginRootPath = pluginRootPaths[pluginRootPaths.length - 1];
 
     if (!pluginRootPath) {
         logWarn();
