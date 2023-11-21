@@ -5,4 +5,5 @@ export type HermioneHandler = keyof Pick<
     'on' | 'prependListener' | 'intercept'
 >;
 
-export type HermioneEvent = Hermione.EVENTS[keyof Hermione.EVENTS];
+export type HermioneEvent =
+    Hermione['events'][keyof Hermione['events']];

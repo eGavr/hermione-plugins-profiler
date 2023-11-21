@@ -1,3 +1,4 @@
+import type Hermione from 'hermione';
 import { generateReporter } from 'hermione-profiler-ui';
 
 import { parseConfig, PluginConfig } from './config';

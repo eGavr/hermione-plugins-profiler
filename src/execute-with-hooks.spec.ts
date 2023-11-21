@@ -3,6 +3,10 @@ import 'jest-extended';
 
 import { executeWithHooks } from './execute-with-hooks';
 
+const getCallOrder = (fn: jest.Mock): number => {
+    return fn.mock.invocationCallOrder[0];
+};
+
 describe('executeWithHooks', () => {
     describe('sync', () => {
         test('should call handlers in right order', () => {
@@ -15,8 +19,13 @@ describe('executeWithHooks', () => {
             const res = executeWithHooks(fns);
 
             expect(res).toBe('res');
-            expect(fns.fn).toHaveBeenCalledAfter(fns.before);
-            expect(fns.fn).toHaveBeenCalledBefore(fns.after);
+
+            const beforeFnCallOrder = getCallOrder(fns.before);
+            const fnCallOrder = getCallOrder(fns.fn);
+            const afterFnCallOrder = getCallOrder(fns.after);
+
+            expect(beforeFnCallOrder).toBeLessThan(fnCallOrder);
+            expect(fnCallOrder).toBeLessThan(afterFnCallOrder);
         });
 
         test('should call handlers in right order even if handler throws', () => {
@@ -29,8 +38,13 @@ describe('executeWithHooks', () => {
             };
 
             expect(() => executeWithHooks(fns)).toThrow('err');
-            expect(fns.fn).toHaveBeenCalledAfter(fns.before);
-            expect(fns.fn).toHaveBeenCalledBefore(fns.after);
+
+            const beforeFnCallOrder = getCallOrder(fns.before);
+            const fnCallOrder = getCallOrder(fns.fn);
+            const afterFnCallOrder = getCallOrder(fns.after);
+
+            expect(beforeFnCallOrder).toBeLessThan(fnCallOrder);
+            expect(fnCallOrder).toBeLessThan(afterFnCallOrder);
         });
     });
 
@@ -59,8 +73,13 @@ describe('executeWithHooks', () => {
             const res = await prom;
 
             expect(res).toBe('res');
-            expect(fns.fn).toHaveBeenCalledAfter(fns.before);
-            expect(fns.fn).toHaveBeenCalledBefore(fns.after);
+
+            const beforeFnCallOrder = getCallOrder(fns.before);
+            const fnCallOrder = getCallOrder(fns.fn);
+            const afterFnCallOrder = getCallOrder(fns.after);
+
+            expect(beforeFnCallOrder).toBeLessThan(fnCallOrder);
+            expect(fnCallOrder).toBeLessThan(afterFnCallOrder);
         });
 
         test('should call handlers in right order even if handler rejects', async () => {
@@ -70,9 +89,21 @@ describe('executeWithHooks', () => {
                 after: jest.fn(),
             };
 
-            await expect(executeWithHooks(fns)).toReject();
-            expect(fns.fn).toHaveBeenCalledAfter(fns.before);
-            expect(fns.fn).toHaveBeenCalledBefore(fns.after);
+            const isRejected = await Promise.resolve(
+                executeWithHooks(fns)
+            ).then(
+                () => false,
+                () => true
+            );
+
+            expect(isRejected).toBe(true);
+
+            const beforeFnCallOrder = getCallOrder(fns.before);
+            const fnCallOrder = getCallOrder(fns.fn);
+            const afterFnCallOrder = getCallOrder(fns.after);
+
+            expect(beforeFnCallOrder).toBeLessThan(fnCallOrder);
+            expect(fnCallOrder).toBeLessThan(afterFnCallOrder);
         });
     });
 });

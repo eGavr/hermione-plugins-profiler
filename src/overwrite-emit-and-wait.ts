@@ -1,3 +1,5 @@
+import type Hermione from 'hermione';
+
 import { HermioneEvent } from './types';
 
 export function overwriteEmitAndWait({
