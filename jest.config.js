@@ -4,5 +4,5 @@ module.exports = {
   testMatch: [
     "**/src/**/*.spec.ts"
   ],
-  setupFilesAfterEnv: ["jest-extended"]
+  setupFilesAfterEnv: ["jest-extended/all"]
 };
