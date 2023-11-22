@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/gemini-testing/hermione-plugins-profiler/compare/v0.2.3...v1.0.0) (2023-11-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **node:** node versions less than 18.0.0 are no longer supported
+
+### Features
+
+* **node:** drop node versions less than 18 ([16365ef](https://github.com/gemini-testing/hermione-plugins-profiler/commit/16365ef02330b79ce7b473045fc6d062c7b78271))
+
+
+### Bug Fixes
+
+* correctly parse plugin-name from pnpm ([ebc5182](https://github.com/gemini-testing/hermione-plugins-profiler/commit/ebc518210abad74bf83c254b9a54115fc67c2d49))
+
 ### [0.2.3](https://github.com/gemini-testing/hermione-plugins-profiler/compare/v0.2.2...v0.2.3) (2021-09-17)
 
 
