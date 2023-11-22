@@ -103,4 +103,36 @@ describe('parsePluginName', () => {
             '@some-org/some-plugin-name'
         );
     });
+
+    test('should return a plugin name from a stack if it is from .pnpm', () => {
+        const stack = `
+            at Hermione.herm.<computed> (/Users/name/prj/node_modules/.pnpm/hermione-plugins-profiler@0.0.0/node_modules/hermione-plugins-profiler/index.js:48:20)
+            at module.exports (/Users/name/prj/node_modules/.pnpm/another-plugin@1.0.0/node_modules/some-plugin/index.js:48:20)
+            at /Users/name/prj/node_modules/.pnpm/plugins-loader/node_modules/plugins-loader/index.js:48:20
+            at Module.load (node:internal/modules/cjs/loader:1037:32)
+          `;
+
+        const err = new Error();
+
+        err.stack = stack;
+
+        expect(parsePluginName(err)).toEqual('some-plugin');
+    });
+
+    test('should return a plugin name from a stack if it is from .pnpm-store', () => {
+        const stack = `
+            at Hermione.herm.<computed> [as on] (/Users/name/.pnpm-store/some-virtual-store/hermione-plugins-profiler@0.0.0/node_modules/hermione-plugins-profiler/index.js:48:20)
+            at module.exports (/Users/name/.pnpm-store/some-virtual-store/@some-plugin@0.0.0_56d91d656e193c0ca144cec591e28121/node_modules/@some-scope/some-plugin/index.js:48:20)
+            at /Users/name/.pnpm-store/some-virtual-store/plugins-loader@0.0.0/node_modules/plugins-loader/lib/index.js:48:20
+            at /Users/name/.pnpm-store/some-virtual-store/plugins-loader@0.0.0/node_modules/plugins-loader/lib/index.js:48:20
+          `;
+
+        const err = new Error();
+
+        err.stack = stack;
+
+        expect(parsePluginName(err)).toEqual(
+            '@some-scope/some-plugin'
+        );
+    });
 });
