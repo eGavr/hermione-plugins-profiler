@@ -1,8 +1,8 @@
-import type Hermione from 'hermione';
 import _ from 'lodash';
+import type Testplane from 'testplane';
 
 import { executeWithHooks } from './execute-with-hooks';
-import { wrapHermioneHandler } from './wrap-hermione-handler';
+import { wrapTestplaneHandler } from './wrap-testplane-handler';
 import { IWriter } from './writer';
 
 jest.mock('./execute-with-hooks');
@@ -10,9 +10,9 @@ jest.mock('./parse-plugin-name', () => ({
     parsePluginName: jest.fn().mockReturnValue('some-name'),
 }));
 
-describe('wrapHermioneHandler', () => {
+describe('wrapTestplaneHandler', () => {
     let originOnHandlerMock: jest.Mock;
-    let hermioneMock: {
+    let testplaneMock: {
         on: jest.Mock;
         isWorker: () => boolean;
         events: {
@@ -25,7 +25,7 @@ describe('wrapHermioneHandler', () => {
 
     beforeEach(() => {
         originOnHandlerMock = jest.fn();
-        hermioneMock = {
+        testplaneMock = {
             on: originOnHandlerMock,
             isWorker: () => true,
             events: {
@@ -36,9 +36,9 @@ describe('wrapHermioneHandler', () => {
             write: jest.fn(),
         };
 
-        wrapHermioneHandler(
+        wrapTestplaneHandler(
             'on',
-            hermioneMock as unknown as Hermione,
+            testplaneMock as unknown as Testplane,
             writerMock as unknown as IWriter
         );
     });
@@ -48,7 +48,7 @@ describe('wrapHermioneHandler', () => {
     });
 
     test('should pass event and wrapper to the original handler', () => {
-        hermioneMock.on('someEvent');
+        testplaneMock.on('someEvent');
 
         expect(originOnHandlerMock).toBeCalledWith(
             'someEvent',
@@ -59,7 +59,7 @@ describe('wrapHermioneHandler', () => {
     test("should not perform measurement if event('cli') has to be skipped", () => {
         const eventHandler = jest.fn();
 
-        hermioneMock.on('cli', eventHandler);
+        testplaneMock.on('cli', eventHandler);
 
         const [call] = originOnHandlerMock.mock.calls;
         const [event, wrapper] = call;
@@ -73,7 +73,7 @@ describe('wrapHermioneHandler', () => {
     test("should perform measurement if event hasn't to be skipped", () => {
         const event = 'testPass';
 
-        hermioneMock.on(event, jest.fn());
+        testplaneMock.on(event, jest.fn());
 
         const [, wrapper] = _.first(originOnHandlerMock.mock.calls);
 
@@ -92,7 +92,7 @@ describe('wrapHermioneHandler', () => {
         const eventHandler = jest.fn();
         const event = 'testPass';
 
-        hermioneMock.on(event, eventHandler);
+        testplaneMock.on(event, eventHandler);
 
         const [, wrapper] = _.first(originOnHandlerMock.mock.calls);
 
@@ -119,7 +119,7 @@ describe('wrapHermioneHandler', () => {
         beforeEach(() => {
             jest.useFakeTimers();
 
-            hermioneMock.on(event, jest.fn());
+            testplaneMock.on(event, jest.fn());
 
             const [, wrapper] = _.first(
                 originOnHandlerMock.mock.calls

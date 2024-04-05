@@ -30,7 +30,7 @@ describe('config', () => {
         const res = parseConfig(opts);
 
         expect(res).toMatchObject({
-            reportPath: 'hermione-profiler',
+            reportPath: 'testplane-profiler',
         });
     });
 

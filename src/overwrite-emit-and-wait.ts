@@ -1,22 +1,22 @@
-import type Hermione from 'hermione';
+import type Testplane from 'testplane';
 
-import { HermioneEvent } from './types';
+import { TestplaneEvent } from './types';
 
 export function overwriteEmitAndWait({
     emitAndWait,
     onInit,
     onFinish,
-    hermione,
+    testplane,
 }: {
-    emitAndWait: Hermione['emitAndWait'];
+    emitAndWait: Testplane['emitAndWait'];
     onInit: () => Promise<unknown>;
     onFinish: () => Promise<unknown>;
-    hermione: Hermione;
-}): Hermione['emitAndWait'] {
-    return (event: HermioneEvent, ...args: unknown[]) => {
+    testplane: Testplane;
+}): Testplane['emitAndWait'] {
+    return (event: TestplaneEvent, ...args: unknown[]) => {
         const emit = () => emitAndWait(event, ...args);
 
-        if (event === hermione.events.INIT) {
+        if (event === testplane.events.INIT) {
             return onInit()
                 .catch((err: Error) =>
                     console.log(`Unable to init plugin: ${err.stack}`)
@@ -24,7 +24,7 @@ export function overwriteEmitAndWait({
                 .then(() => emit());
         }
 
-        if (event === hermione.events.RUNNER_END) {
+        if (event === testplane.events.RUNNER_END) {
             const handleFinish = () =>
                 onFinish().catch((err: Error) =>
                     console.error(

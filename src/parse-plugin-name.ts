@@ -17,7 +17,7 @@ const findFrameWithPluginName = (
 
         return (
             Boolean(getFileName) &&
-            getFileName.includes('hermione-plugins-profiler')
+            getFileName.includes('@testplane/plugins-profiler')
         );
     });
 

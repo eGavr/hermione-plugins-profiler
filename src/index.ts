@@ -1,12 +1,12 @@
-import type Hermione from 'hermione';
 import { generateReporter } from 'hermione-profiler-ui';
+import type Testplane from 'testplane';
 
 import { parseConfig, PluginConfig } from './config';
 import { overwriteEmitAndWait } from './overwrite-emit-and-wait';
-import { wrapHermioneHandler } from './wrap-hermione-handler';
+import { wrapTestplaneHandler } from './wrap-testplane-handler';
 import { JsonWriterMaster, JsonWriterWorker } from './writer';
 
-export = (hermione: Hermione, opts: PluginConfig) => {
+export = (testplane: Testplane, opts: PluginConfig) => {
     const config = parseConfig(opts);
     const fileName = 'plugins.json';
 
@@ -14,12 +14,12 @@ export = (hermione: Hermione, opts: PluginConfig) => {
         return;
     }
 
-    const writer = hermione.isWorker()
+    const writer = testplane.isWorker()
         ? new JsonWriterWorker(config.reportPath, fileName)
         : new JsonWriterMaster(config.reportPath, fileName);
 
-    hermione.emitAndWait = overwriteEmitAndWait({
-        emitAndWait: hermione.emitAndWait.bind(hermione),
+    testplane.emitAndWait = overwriteEmitAndWait({
+        emitAndWait: testplane.emitAndWait.bind(testplane),
         onInit: async () => writer.init(),
         onFinish: async () => {
             writer.end();
@@ -29,10 +29,10 @@ export = (hermione: Hermione, opts: PluginConfig) => {
                 config.reportPath
             );
         },
-        hermione,
+        testplane,
     });
 
-    wrapHermioneHandler('on', hermione, writer);
-    wrapHermioneHandler('prependListener', hermione, writer);
-    wrapHermioneHandler('intercept', hermione, writer);
+    wrapTestplaneHandler('on', testplane, writer);
+    wrapTestplaneHandler('prependListener', testplane, writer);
+    wrapTestplaneHandler('intercept', testplane, writer);
 };
