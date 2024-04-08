@@ -1,6 +1,6 @@
 {
   "name": "@testplane/plugins-profiler",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A plugin to profile another plugins",
   "main": "build/index.js",
   "repository": "https://github.com/gemini-testing/testplane-plugins-profiler",
