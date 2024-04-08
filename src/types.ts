@@ -1,9 +1,9 @@
-import type Hermione from 'hermione';
+import type Testplane from 'testplane';
 
-export type HermioneHandler = keyof Pick<
-    Hermione,
+export type TestplaneHandler = keyof Pick<
+    Testplane,
     'on' | 'prependListener' | 'intercept'
 >;
 
-export type HermioneEvent =
-    Hermione['events'][keyof Hermione['events']];
+export type TestplaneEvent =
+    Testplane['events'][keyof Testplane['events']];

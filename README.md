@@ -1,6 +1,6 @@
-# hermione-plugins-profiler
+# @testplane/plugins-profiler
 
-Plugins to profile another plugins of [hermione](https://github.com/gemini-testing/hermione).
+Plugins to profile another plugins of [Testplane](https://github.com/gemini-testing/testplane).
 
 UI for this plugin [hermione-profiler-ui](https://github.com/gemini-testing/hermione-profiler-ui).
 
@@ -9,17 +9,17 @@ UI for this plugin [hermione-profiler-ui](https://github.com/gemini-testing/herm
 Installation:
 
 ```sh
-npm i -S hermione-plugins-profiler
+npm i -D @testplane/plugins-profiler
 ```
 
 ### Attach
 
-**.hermione.conf.js:**
+**.testplane.conf.js:**
 
 ```js
 // ...
 plugins: {
-  "hermione-plugins-profiler": {
+  "@testplane/plugins-profiler": {
     enabled: true,
     reportPath: "path_to_report" // default - "./plugins-profiler"
   }

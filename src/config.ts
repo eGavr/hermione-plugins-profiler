@@ -42,11 +42,11 @@ export function parseConfig(options: PluginConfig): PluginConfig {
             enabled: booleanOption('enabled'),
             reportPath: stringOption(
                 'reportPath',
-                'hermione-profiler'
+                'testplane-profiler'
             ),
         }),
         {
-            envPrefix: 'hermione_plugins_profiler_',
+            envPrefix: 'testplane_plugins_profiler_',
             cliPrefix: '--plugins-profiler-',
         }
     );

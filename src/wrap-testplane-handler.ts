@@ -1,26 +1,26 @@
-import type Hermione from 'hermione';
+import type Testplane from 'testplane';
 
 import { executeWithHooks } from './execute-with-hooks';
 import { parsePluginName } from './parse-plugin-name';
-import { HermioneEvent, HermioneHandler } from './types';
+import { TestplaneEvent, TestplaneHandler } from './types';
 import { IWriter } from './writer';
 
 const DURATION_LIMIT_MS = 2;
 
-export function wrapHermioneHandler(
-    listenerName: HermioneHandler,
-    hermione: Hermione,
+export function wrapTestplaneHandler(
+    listenerName: TestplaneHandler,
+    testplane: Testplane,
     writer: IWriter
 ) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const herm = hermione as unknown as any;
-    const EVENTS_TO_EXCLUDE = [hermione.events.CLI as string];
+    const herm = testplane as unknown as any;
+    const EVENTS_TO_EXCLUDE = [testplane.events.CLI as string];
     const originListener = herm[listenerName].bind(herm);
 
     herm[listenerName] = function (
-        event: HermioneEvent,
+        event: TestplaneEvent,
         fn: (...args: unknown[]) => unknown
-    ): Hermione {
+    ): Testplane {
         const pluginName = parsePluginName(new Error());
 
         originListener(event, (...args: unknown[]): unknown => {
@@ -42,7 +42,7 @@ export function wrapHermioneHandler(
                     }
 
                     writer.write({
-                        worker: hermione.isWorker(),
+                        worker: testplane.isWorker(),
                         pid: process.pid,
                         pluginName,
                         listenerName,
@@ -55,6 +55,6 @@ export function wrapHermioneHandler(
             });
         });
 
-        return hermione;
+        return testplane;
     };
 }

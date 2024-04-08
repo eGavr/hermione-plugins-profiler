@@ -1,8 +1,8 @@
-import type Hermione from 'hermione';
+import type Testplane from 'testplane';
 
 import { parseConfig, PluginConfig } from './config';
 import { overwriteEmitAndWait } from './overwrite-emit-and-wait';
-import { wrapHermioneHandler } from './wrap-hermione-handler';
+import { wrapTestplaneHandler } from './wrap-testplane-handler';
 import { JsonWriterMaster, JsonWriterWorker } from './writer';
 
 import attachPlugin from './index';
@@ -10,23 +10,23 @@ import attachPlugin from './index';
 jest.mock('hermione-profiler-ui');
 jest.mock('./writer');
 jest.mock('./overwrite-emit-and-wait');
-jest.mock('./wrap-hermione-handler');
+jest.mock('./wrap-testplane-handler');
 jest.mock('./config', () => ({
     parseConfig: jest.fn((opts) => opts),
 }));
 
 describe('entry-point', () => {
-    let hermione: {
+    let testplane: {
         on: jest.SpyInstance;
         isWorker: jest.SpyInstance;
         emitAndWait: jest.SpyInstance;
     };
     let opts: PluginConfig;
     const init = () =>
-        attachPlugin(hermione as unknown as Hermione, opts);
+        attachPlugin(testplane as unknown as Testplane, opts);
 
     beforeEach(() => {
-        hermione = {
+        testplane = {
             on: jest.fn((_: string, cb: () => void) => {
                 cb();
             }),
@@ -56,7 +56,7 @@ describe('entry-point', () => {
     test('should init plugin if it is enabled', async () => {
         init();
 
-        expect(wrapHermioneHandler).toBeCalled();
+        expect(wrapTestplaneHandler).toBeCalled();
     });
 
     test('should wrap handlers', async () => {
@@ -64,18 +64,18 @@ describe('entry-point', () => {
 
         expect(overwriteEmitAndWait).toBeCalled();
 
-        expect(wrapHermioneHandler).toBeCalledTimes(3);
-        expect(wrapHermioneHandler).toBeCalledWith(
+        expect(wrapTestplaneHandler).toBeCalledTimes(3);
+        expect(wrapTestplaneHandler).toBeCalledWith(
             'on',
             expect.anything(),
             expect.anything()
         );
-        expect(wrapHermioneHandler).toBeCalledWith(
+        expect(wrapTestplaneHandler).toBeCalledWith(
             'prependListener',
             expect.anything(),
             expect.anything()
         );
-        expect(wrapHermioneHandler).toBeCalledWith(
+        expect(wrapTestplaneHandler).toBeCalledWith(
             'intercept',
             expect.anything(),
             expect.anything()
@@ -83,7 +83,7 @@ describe('entry-point', () => {
     });
 
     test('should create writer for master', async () => {
-        hermione.isWorker.mockReturnValue(false);
+        testplane.isWorker.mockReturnValue(false);
 
         init();
 
@@ -95,7 +95,7 @@ describe('entry-point', () => {
     });
 
     test('should create writer for worker', async () => {
-        hermione.isWorker.mockReturnValue(true);
+        testplane.isWorker.mockReturnValue(true);
 
         init();
 
@@ -120,7 +120,7 @@ describe('entry-point', () => {
 
         describe('master', () => {
             beforeEach(() => {
-                hermione.isWorker.mockReturnValue(false);
+                testplane.isWorker.mockReturnValue(false);
 
                 init();
 
@@ -142,7 +142,7 @@ describe('entry-point', () => {
 
         describe('worker', () => {
             beforeEach(() => {
-                hermione.isWorker.mockReturnValue(true);
+                testplane.isWorker.mockReturnValue(true);
 
                 init();
 
