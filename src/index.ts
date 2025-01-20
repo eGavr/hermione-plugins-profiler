@@ -10,6 +10,8 @@ export = (testplane: Testplane, opts: PluginConfig) => {
     const config = parseConfig(opts);
     const fileName = 'plugins.json';
 
+    Object.assign(opts, config);
+
     if (!config.enabled) {
         return;
     }
